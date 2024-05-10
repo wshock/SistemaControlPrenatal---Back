@@ -20,7 +20,7 @@ app.use(cors());
 // Rutas 
 app.use(require("./routes/index.js"));
 app.use(require("./routes/authentication.js"));
-app.use("/madres",require("./routes/madres.js"));
+app.use("/gestantes",require("./routes/gestantes.js"));
 
 
 // Iniciar servidor 

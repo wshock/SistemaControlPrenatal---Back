@@ -7,24 +7,34 @@ const path = require("path");
 const database = require("../database");
 
 
-
 // Cuando se haga un get a la ruta :/madres/ se mostrala la página profPrincipal
 router.get("/", (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profPrincipal.html'))
 })
 
 // Este método es para que express pueda servir todos los archivos relacionados con los html (css, js, img etc)
-router.use("",express.static(path.join(__dirname, '../../../Front-End')));
+router.use("",express.static(path.join(__dirname, '../../../Front-End'), {
+
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        } else if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+    }
+
+}));
+
 
 
 // Cuando se haga un get a la ruta :/madres/add se mostrará la página profReg-CarnePerinatal
 router.get("/add", (req,res)=>{
-    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profReg-CarnePerinatal.html'))
+    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/Sidebar/profSideBar.html'))
 })
 
 // Cuando se haga un get a la ruta :/madres/list/MadresList se hará una consulta a la base de datos
 // para poder listar a las madres
-router.get("/list/MadresList", async (req,res)=>{
+router.get("/list/GestantesList", async (req,res)=>{
     const connection = await database.getConnection();
     const madres = await connection.query('SELECT * FROM pacientes')
     res.send(madres[0]);
@@ -43,7 +53,7 @@ router.get("/list/delete/:id", async (req, res) => {
     const connection = await database.getConnection();
     await connection.query("DELETE FROM pacientes WHERE id = ?", [id]);
 
-    res.redirect("/madres/list")
+    res.redirect("/gestantes/list")
 })
 
 // Cuando se haga un get a la ruta :/madres/list/edit/:id se redireccionará a una vista
