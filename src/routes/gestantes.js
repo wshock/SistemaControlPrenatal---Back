@@ -27,16 +27,55 @@ router.use("",express.static(path.join(__dirname, '../../../Front-End'), {
 
 
 
+// RUTAS PARA AÑADIR NUEVA MADRE/GESTACIÓN:
+
+
 // Cuando se haga un get a la ruta :/madres/add se mostrará la página profReg-CarnePerinatal
 router.get("/add", (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/Sidebar/profSideBar.html'))
 })
 
+// Cuando se haga un post a la ruta :/madres/add se obtendrán los datos del formulario
+// del DOM y se mandarán a la base de datos para guardarlos y registrar a la paciente
+router.post("/add", async (req, res)=>{
+    const { nombre, apellido, domicilio, localidad, correo, 
+        fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
+         estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad } = req.body;
+
+    const newMadre = {
+        nombres: nombre,
+        apellidos: apellido,
+        domicilio,
+        localidad,
+        fecha_nacimiento,
+        edad,
+        etnia,
+        alfabeta,
+        estudios,
+        anos_mayor_nivel:anosMayorNivel,
+        estado_civil:estadoCivil,
+        vive_sola:viveSola,
+        numero_identidad:numeroIdentidad,
+        correo,
+        lugarControlPrenatal
+    }
+
+    const connection = await database.getConnection();
+    await connection.query("INSERT INTO pacientes set ?", [newMadre])
+    res.send("received");
+})
+
+
+
+
+// RUTAS PARA LA BUSQUEDA Y LISTA DE GESTANTES:
+
 // Cuando se haga un get a la ruta :/madres/list/MadresList se hará una consulta a la base de datos
 // para poder listar a las madres
-router.get("/list/GestantesList", async (req,res)=>{
+router.get("/list/:id", async (req,res)=>{
+    const { id } = req.params;
     const connection = await database.getConnection();
-    const madres = await connection.query('SELECT * FROM pacientes')
+    const madres = await connection.query('SELECT * FROM pacientes WHERE numero_identidad = ?', [id])
     res.send(madres[0]);
 })
 
@@ -44,6 +83,20 @@ router.get("/list/GestantesList", async (req,res)=>{
 router.get("/list", (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profMadres.html'))
 })
+
+
+
+// RUTAS PARA EL MANEJO DE MADRES/GESTACIONES EXISTENTES:
+
+router.get("/edit/:id", async (req,res)=>{
+    res.send("Acá se editara a la madre con id: " + req.params.id+ " (no se q se hará bien todavía xd)")
+})
+
+
+
+
+
+// RUTAS QUE SE ESTAN EN STANDBY DEBIDO A CAMBIOS: 
 
 // Cuando se haga un get a la ruta :/madres/list/delete/:id se eliminará el objeto
 // directamente de la base de datos
@@ -102,36 +155,6 @@ router.post("/list/edit/:id/", async (req, res) => {
     res.send("Success")
 })
 
-
-// Cuando se haga un post a la ruta :/madres/add se obtendrán los datos del formulario
-// del DOM y se mandarán a la base de datos para guardarlos y registrar a la paciente
-router.post("/add", async (req, res)=>{
-    const { nombre, apellido, domicilio, localidad, correo, 
-        fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
-         estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad } = req.body;
-
-    const newMadre = {
-        nombres: nombre,
-        apellidos: apellido,
-        domicilio,
-        localidad,
-        fecha_nacimiento,
-        edad,
-        etnia,
-        alfabeta,
-        estudios,
-        anos_mayor_nivel:anosMayorNivel,
-        estado_civil:estadoCivil,
-        vive_sola:viveSola,
-        numero_identidad:numeroIdentidad,
-        correo,
-        lugarControlPrenatal
-    }
-
-    const connection = await database.getConnection();
-    await connection.query("INSERT INTO pacientes set ?", [newMadre])
-    res.send("received");
-})
 
 // empezando parte de .C.rud mysql
 
