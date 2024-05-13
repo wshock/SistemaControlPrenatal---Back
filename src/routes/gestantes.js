@@ -7,7 +7,7 @@ const path = require("path");
 const database = require("../database");
 
 
-// Cuando se haga un get a la ruta :/madres/ se mostrala la página profPrincipal
+// Cuando se haga un get a la ruta :/gestantes/ se mostrala la página profPrincipal
 router.get("/", (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profPrincipal.html'))
 })
@@ -30,17 +30,24 @@ router.use("",express.static(path.join(__dirname, '../../../Front-End'), {
 // RUTAS PARA AÑADIR NUEVA MADRE/GESTACIÓN:
 
 
-// Cuando se haga un get a la ruta :/madres/add se mostrará la página profReg-CarnePerinatal
+// Cuando se haga un get a la ruta :/gestantes/add se mostrará la página profReg-CarnePerinatal
 router.get("/add", (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/Sidebar/profSideBar.html'))
 })
 
-// Cuando se haga un post a la ruta :/madres/add se obtendrán los datos del formulario
+// Cuando se haga un post a la ruta :/gestantes/add se obtendrán los datos del formulario
 // del DOM y se mandarán a la base de datos para guardarlos y registrar a la paciente
 router.post("/add", async (req, res)=>{
     const { nombre, apellido, domicilio, localidad, correo, 
         fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
-         estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad } = req.body;
+        estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad,
+        tbcFamiliar, tbcPersonal, diabetesFamiliar, diabetesPersonal,
+        hipertensionFamiliar, hipertensionPersonal, pre_eclampsiaFamiliar, pre_eclampsiaPersonal,
+        otrosAntecedentesFamiliares, otrosAntecedentesPersonales, cirugiaPelvica, infertibilidad,
+        vih, cardio_nefropatia, ectopicos, condicion_grave, gestasPrevias, gestasPreviasNumero,
+        tuvoAbortos, abortosNumero, tresAbortosConsecutivos, tuvoPartos, partosNumero, pesoMenor2500g,
+        pesoMayor4000g, partoMultiple, numeroPartosVaginales, numeroPartosCesarea, numeroNacidosVivos,
+        numeroViven, muertos1semana, muertosdespues1semana, numeroNacidosMuertos } = req.body;
 
     const newMadre = {
         nombres: nombre,
@@ -57,7 +64,40 @@ router.post("/add", async (req, res)=>{
         vive_sola:viveSola,
         numero_identidad:numeroIdentidad,
         correo,
-        lugarControlPrenatal
+        lugarControlPrenatal,
+        tbcFamiliar,
+        tbcPersonal,
+        diabetesFamiliar,
+        diabetesPersonal,
+        hipertensionFamiliar,
+        hipertensionPersonal,
+        pre_eclampsiaFamiliar,
+        pre_eclampsiaPersonal,
+        otrosAntecedentesFamiliares,
+        otrosAntecedentesPersonales,
+        cirugiaPelvica,
+        infertibilidad,
+        vih,
+        cardio_nefropatia,
+        ectopicos,
+        condicion_grave, 
+        gestasPrevias, 
+        gestasPreviasNumero, 
+        tuvoAbortos, 
+        abortosNumero, 
+        tresAbortosConsecutivos, 
+        tuvoPartos, 
+        partosNumero, 
+        pesoMenor2500g, 
+        pesoMayor4000g, 
+        partoMultiple, 
+        numeroPartosVaginales, 
+        numeroPartosCesarea, 
+        numeroNacidosVivos, 
+        numeroViven, 
+        muertos1semana, 
+        muertosdespues1semana, 
+        numeroNacidosMuertos
     }
 
     const connection = await database.getConnection();
@@ -70,18 +110,20 @@ router.post("/add", async (req, res)=>{
 
 // RUTAS PARA LA BUSQUEDA Y LISTA DE GESTANTES:
 
-// Cuando se haga un get a la ruta :/madres/list/MadresList se hará una consulta a la base de datos
-// para poder listar a las madres
+
+// Cuando se haga un get a la ruta :/madres/list se mostrará la página profMadres.html
+router.get("/list", (req,res)=>{
+    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profMadres.html'))
+})
+
+// Cuando se haga un get a la ruta :/gestantes/list/:id se hará una consulta a la base de datos
+// para poder listar a las madres/gestaciones
+
 router.get("/list/:id", async (req,res)=>{
     const { id } = req.params;
     const connection = await database.getConnection();
     const madres = await connection.query('SELECT * FROM pacientes WHERE numero_identidad = ?', [id])
     res.send(madres[0]);
-})
-
-// Cuando se haga un get a la ruta :/madres/list se mostrará la página profMadres.html
-router.get("/list", (req,res)=>{
-    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profMadres.html'))
 })
 
 
