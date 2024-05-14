@@ -39,20 +39,23 @@ router.get("/add", (req,res)=>{
 // del DOM y se mandarán a la base de datos para guardarlos y registrar a la paciente
 router.post("/add", async (req, res)=>{
 
-    const { nombre, apellido, domicilio, localidad, correo, 
+    const { nombre, apellido, tipoDocumento, domicilio, localidad, correo, 
         fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
-        estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad,
+        estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad, regimen, eps,
         tbcFamiliar, tbcPersonal, diabetesFamiliar, diabetesPersonal,
         hipertensionFamiliar, hipertensionPersonal, pre_eclampsiaFamiliar, pre_eclampsiaPersonal,
         otrosAntecedentesFamiliares, otrosAntecedentesPersonales, cirugiaPelvica, infertibilidad,
         vih, cardio_nefropatia, ectopicos, condicion_grave, gestasPrevias, gestasPreviasNumero,
         tuvoAbortos, abortosNumero, tresAbortosConsecutivos, tuvoPartos, partosNumero, pesoMenor2500g,
         pesoMayor4000g, partoMultiple, numeroPartosVaginales, numeroPartosCesarea, numeroNacidosVivos,
-        numeroViven, muertos1semana, muertosdespues1semana, numeroNacidosMuertos } = req.body;
+        numeroViven, muertos1semana, muertosdespues1semana, numeroNacidosMuertos, planeadoODeseado, usabaAnticonceptivo,
+        barrera, DIU, hormonal, emergencia, ligadura, otro } = req.body;
 
     const newMadre = {
         nombres: nombre,
         apellidos: apellido,
+        tipoDocumento,
+        numero_identidad:numeroIdentidad,
         domicilio,
         localidad,
         fecha_nacimiento,
@@ -63,9 +66,10 @@ router.post("/add", async (req, res)=>{
         anos_mayor_nivel:anosMayorNivel,
         estado_civil:estadoCivil,
         vive_sola:viveSola,
-        numero_identidad:numeroIdentidad,
         correo,
         lugarControlPrenatal,
+        regimen,
+        eps,
         tbcFamiliar,
         tbcPersonal,
         diabetesFamiliar,
@@ -98,7 +102,15 @@ router.post("/add", async (req, res)=>{
         numeroViven, 
         muertos1semana, 
         muertosdespues1semana, 
-        numeroNacidosMuertos
+        numeroNacidosMuertos,
+        planeadoODeseado, 
+        usabaAnticonceptivo,
+        barrera, 
+        DIU, 
+        hormonal, 
+        emergencia, 
+        ligadura, 
+        otro
     }
 
     const connection = await database.getConnection();
@@ -149,20 +161,23 @@ router.get("/edit/:id/reqInfo", async (req, res) => {
 router.post("/edit/:id", async (req, res) => {
     const { id } = req.params;
 
-    const { nombre, apellido, domicilio, localidad, correo, 
+    const { nombre, apellido, tipoDocumento, domicilio, localidad, correo, 
         fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
-        estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad,
+        estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad, regimen, eps,
         tbcFamiliar, tbcPersonal, diabetesFamiliar, diabetesPersonal,
         hipertensionFamiliar, hipertensionPersonal, pre_eclampsiaFamiliar, pre_eclampsiaPersonal,
         otrosAntecedentesFamiliares, otrosAntecedentesPersonales, cirugiaPelvica, infertibilidad,
         vih, cardio_nefropatia, ectopicos, condicion_grave, gestasPrevias, gestasPreviasNumero,
         tuvoAbortos, abortosNumero, tresAbortosConsecutivos, tuvoPartos, partosNumero, pesoMenor2500g,
         pesoMayor4000g, partoMultiple, numeroPartosVaginales, numeroPartosCesarea, numeroNacidosVivos,
-        numeroViven, muertos1semana, muertosdespues1semana, numeroNacidosMuertos } = req.body;
+        numeroViven, muertos1semana, muertosdespues1semana, numeroNacidosMuertos, planeadoODeseado, usabaAnticonceptivo,
+        barrera, DIU, hormonal, emergencia, ligadura, otro } = req.body;
 
     const editMadre = {
         nombres: nombre,
         apellidos: apellido,
+        tipoDocumento,
+        numero_identidad:numeroIdentidad,
         domicilio,
         localidad,
         fecha_nacimiento,
@@ -173,9 +188,10 @@ router.post("/edit/:id", async (req, res) => {
         anos_mayor_nivel:anosMayorNivel,
         estado_civil:estadoCivil,
         vive_sola:viveSola,
-        numero_identidad:numeroIdentidad,
         correo,
         lugarControlPrenatal,
+        regimen,
+        eps,
         tbcFamiliar,
         tbcPersonal,
         diabetesFamiliar,
@@ -208,7 +224,15 @@ router.post("/edit/:id", async (req, res) => {
         numeroViven, 
         muertos1semana, 
         muertosdespues1semana, 
-        numeroNacidosMuertos
+        numeroNacidosMuertos,
+        planeadoODeseado, 
+        usabaAnticonceptivo,
+        barrera, 
+        DIU, 
+        hormonal, 
+        emergencia, 
+        ligadura, 
+        otro
     }
 
     const connection = await database.getConnection();
