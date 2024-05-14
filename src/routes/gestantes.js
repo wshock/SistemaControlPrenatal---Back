@@ -38,6 +38,7 @@ router.get("/add", (req,res)=>{
 // Cuando se haga un post a la ruta :/gestantes/add se obtendrán los datos del formulario
 // del DOM y se mandarán a la base de datos para guardarlos y registrar a la paciente
 router.post("/add", async (req, res)=>{
+
     const { nombre, apellido, domicilio, localidad, correo, 
         fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
         estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad,
@@ -130,49 +131,34 @@ router.get("/list/:id", async (req,res)=>{
 
 // RUTAS PARA EL MANEJO DE MADRES/GESTACIONES EXISTENTES:
 
+
+// Render de la vista para editar datos del form:
 router.get("/edit/:id", async (req,res)=>{
-    res.send("Acá se editara a la madre con id: " + req.params.id+ " (no se q se hará bien todavía xd)")
+    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profEditSideBar.html'));
 })
 
-
-
-
-
-// RUTAS QUE SE ESTAN EN STANDBY DEBIDO A CAMBIOS: 
-
-// Cuando se haga un get a la ruta :/madres/list/delete/:id se eliminará el objeto
-// directamente de la base de datos
-router.get("/list/delete/:id", async (req, res) => {
-    
-    const { id } = req.params;
-    const connection = await database.getConnection();
-    await connection.query("DELETE FROM pacientes WHERE id = ?", [id]);
-
-    res.redirect("/gestantes/list")
-})
-
-// Cuando se haga un get a la ruta :/madres/list/edit/:id se redireccionará a una vista
-// nueva para editar los datos de la madre
-router.get("/list/edit/:id/", async (req, res) => {
-    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profEditMadre.html'));
-})
-
-// get que se ejecuta cuando se redirecciona a la nueva vista para editar los datos de la madre
-// sirve los datos actuales de la madre para que la profesional los modifique a través del formulario
-router.get("/list/edit/:id/reqInfo", async (req, res) => {
+// Enviar datos de la madre para cargarlos en el front y poder editarlos
+router.get("/edit/:id/reqInfo", async (req, res) => {
     const { id } = req.params;
     const connection = await database.getConnection();
     const pacienteEdit = await connection.query("SELECT * FROM pacientes WHERE id = ?", [id]);
     res.send(pacienteEdit[0][0])
 }) 
 
-// post que envía y modifica los datos editados de la madre a la base de datos
-router.post("/list/edit/:id/", async (req, res) => {
+// Enviar los nuevos datos y actualizarlos en la BD
+router.post("/edit/:id", async (req, res) => {
     const { id } = req.params;
 
     const { nombre, apellido, domicilio, localidad, correo, 
         fecha_nacimiento, edad, etnia, alfabeta, estudios, anosMayorNivel,
-         estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad } = req.body;
+        estadoCivil, viveSola, lugarControlPrenatal, numeroIdentidad,
+        tbcFamiliar, tbcPersonal, diabetesFamiliar, diabetesPersonal,
+        hipertensionFamiliar, hipertensionPersonal, pre_eclampsiaFamiliar, pre_eclampsiaPersonal,
+        otrosAntecedentesFamiliares, otrosAntecedentesPersonales, cirugiaPelvica, infertibilidad,
+        vih, cardio_nefropatia, ectopicos, condicion_grave, gestasPrevias, gestasPreviasNumero,
+        tuvoAbortos, abortosNumero, tresAbortosConsecutivos, tuvoPartos, partosNumero, pesoMenor2500g,
+        pesoMayor4000g, partoMultiple, numeroPartosVaginales, numeroPartosCesarea, numeroNacidosVivos,
+        numeroViven, muertos1semana, muertosdespues1semana, numeroNacidosMuertos } = req.body;
 
     const editMadre = {
         nombres: nombre,
@@ -189,8 +175,42 @@ router.post("/list/edit/:id/", async (req, res) => {
         vive_sola:viveSola,
         numero_identidad:numeroIdentidad,
         correo,
-        lugarControlPrenatal
+        lugarControlPrenatal,
+        tbcFamiliar,
+        tbcPersonal,
+        diabetesFamiliar,
+        diabetesPersonal,
+        hipertensionFamiliar,
+        hipertensionPersonal,
+        pre_eclampsiaFamiliar,
+        pre_eclampsiaPersonal,
+        otrosAntecedentesFamiliares,
+        otrosAntecedentesPersonales,
+        cirugiaPelvica,
+        infertibilidad,
+        vih,
+        cardio_nefropatia,
+        ectopicos,
+        condicion_grave, 
+        gestasPrevias, 
+        gestasPreviasNumero, 
+        tuvoAbortos, 
+        abortosNumero, 
+        tresAbortosConsecutivos, 
+        tuvoPartos, 
+        partosNumero, 
+        pesoMenor2500g, 
+        pesoMayor4000g, 
+        partoMultiple, 
+        numeroPartosVaginales, 
+        numeroPartosCesarea, 
+        numeroNacidosVivos, 
+        numeroViven, 
+        muertos1semana, 
+        muertosdespues1semana, 
+        numeroNacidosMuertos
     }
+
     const connection = await database.getConnection();
     await connection.query("UPDATE pacientes set ? WHERE id = ?",[editMadre, id])
 
@@ -198,7 +218,7 @@ router.post("/list/edit/:id/", async (req, res) => {
 })
 
 
-// empezando parte de .C.rud mysql
+
 
 
 module.exports = router;
