@@ -12,6 +12,7 @@ router.get("/", (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profPrincipal.html'))
 })
 
+
 // Este método es para que express pueda servir todos los archivos relacionados con los html (css, js, img etc)
 router.use("",express.static(path.join(__dirname, '../../../Front-End'), {
 
@@ -241,6 +242,49 @@ router.post("/edit/:id", async (req, res) => {
     res.send("Success")
 })
 
+
+// rutas para agregar consultas (agregar/listar):
+
+// Mostrar vista del formulario de consulta:
+router.get("/edit/:id/Consulta", async (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profNuevaConsulta.html'))
+})
+
+// Guardar en la base de datos la consulta de la gestante correspondiente: (Relacionar tabla 'pacientes' y 'consultas'):
+router.post("/edit/:id/Consulta", async (req, res)=>{
+
+    const { id } = req.params;
+
+    const { fecha_registro, edad_gestacional, presion_arterial,
+        altura_uterina, presentacion, fcf, movimientos_fetales, hierro,
+        acido_folico, calcio, comentarios } = req.body;
+
+    const consultaNueva = {
+        idPaciente: id,
+        fecha_registro, 
+        edad_gestacional, 
+        presion_arterial,
+        altura_uterina, 
+        presentacion, 
+        fcf, 
+        movimientos_fetales, 
+        hierro,
+        acido_folico, 
+        calcio, 
+        comentarios
+    }
+    const connection = await database.getConnection();
+    await connection.query("INSERT INTO consultas set ?", [consultaNueva])
+    res.send("Success");
+})
+
+// Pedirle a la BD los datos de todas las consultas de la paciente según su ID para listarlas en el front.
+router.get("edit/:id/listarConsultas", async (req,res) => {
+    const { id } = req.params;
+    const connection = await database.getConnection();
+    const consultas = await connection.query('SELECT * FROM consultas WHERE idPaciente = ?', [id])
+    res.send(consultas[0]);
+})
 
 
 
