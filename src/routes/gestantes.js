@@ -117,6 +117,7 @@ router.post("/add", async (req, res)=>{
     const connection = await database.getConnection();
     await connection.query("INSERT INTO pacientes set ?", [newMadre])
     res.send("received");
+   
 })
 
 
@@ -138,6 +139,7 @@ router.get("/list/:id", async (req,res)=>{
     const connection = await database.getConnection();
     const madres = await connection.query('SELECT * FROM pacientes WHERE numero_identidad = ?', [id])
     res.send(madres[0]);
+  
 })
 
 
@@ -155,6 +157,7 @@ router.get("/edit/:id/reqInfo", async (req, res) => {
     const connection = await database.getConnection();
     const pacienteEdit = await connection.query("SELECT * FROM pacientes WHERE id = ?", [id]);
     res.send(pacienteEdit[0][0])
+
 }) 
 
 // Enviar los nuevos datos y actualizarlos en la BD
@@ -239,6 +242,7 @@ router.post("/edit/:id", async (req, res) => {
     await connection.query("UPDATE pacientes set ? WHERE id = ?",[editMadre, id])
 
     res.send("Success")
+   
 })
 
 
@@ -275,6 +279,21 @@ router.post("/edit/:id/Consulta", async (req, res)=>{
     const connection = await database.getConnection();
     await connection.query("INSERT INTO consultas set ?", [consultaNueva])
     res.send("Success");
+
+})
+
+router.get("/edit/:id/:idConsulta/getConsulta", async (req, res) => {
+    const { idConsulta } = req.params;
+    const connection = await database.getConnection();
+    const consulta = await connection.query('SELECT * FROM consultas WHERE idConsultas = ?', [idConsulta])
+    res.send(consulta[0][0]);
+})
+
+router.get("/edit/:id/:idConsulta/getNombre", async (req, res) => {
+    const { id } = req.params;
+    const connection = await database.getConnection();
+    const consulta = await connection.query('SELECT nombres FROM pacientes WHERE id = ?', [id])
+    res.send(consulta[0][0]);
 })
 
 // Pedirle a la BD los datos de todas las consultas de la paciente según su ID para listarlas en el front.
@@ -283,18 +302,13 @@ router.get("/edit/:id/listarConsultas", async (req,res) => {
     const connection = await database.getConnection();
     const consultas = await connection.query('SELECT * FROM consultas WHERE idPaciente = ?', [id])
     res.send(consultas[0]);
+
 })
 
 router.get("/edit/:id/:idConsulta", async (req, res) => {
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profConsultaMadre.html'));
 })
 
-router.get("/edit/:id/:idConsulta/info", async (req, res) => {
-    const { idConsulta } = req.params;
-    const connection = await database.getConnection();
-    const consultas = await connection.query("SELECT * FROM consultas WHERE idConsultas = ?", [idConsulta]);
-    res.send(consultas[0]);
-})
 
 
 
