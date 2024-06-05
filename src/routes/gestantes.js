@@ -144,7 +144,6 @@ router.get("/list/:id", async (req,res)=>{
 
 // RUTAS PARA EL MANEJO DE MADRES/GESTACIONES EXISTENTES:
 
-
 // Render de la vista para editar datos del form:
 router.get("/edit/:id", async (req,res)=>{
     res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profEditSideBar.html'));
@@ -279,10 +278,21 @@ router.post("/edit/:id/Consulta", async (req, res)=>{
 })
 
 // Pedirle a la BD los datos de todas las consultas de la paciente según su ID para listarlas en el front.
-router.get("edit/:id/listarConsultas", async (req,res) => {
+router.get("/edit/:id/listarConsultas", async (req,res) => {
     const { id } = req.params;
     const connection = await database.getConnection();
     const consultas = await connection.query('SELECT * FROM consultas WHERE idPaciente = ?', [id])
+    res.send(consultas[0]);
+})
+
+router.get("/edit/:id/:idConsulta", async (req, res) => {
+    res.sendFile(path.join(__dirname, '../../../Front-End/pages/Profesional/profConsultaMadre.html'));
+})
+
+router.get("/edit/:id/:idConsulta/info", async (req, res) => {
+    const { idConsulta } = req.params;
+    const connection = await database.getConnection();
+    const consultas = await connection.query("SELECT * FROM consultas WHERE idConsultas = ?", [idConsulta]);
     res.send(consultas[0]);
 })
 
